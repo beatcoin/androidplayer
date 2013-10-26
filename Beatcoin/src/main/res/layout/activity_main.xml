@@ -14,6 +14,12 @@
         android:text="@string/button_play"
         android:onClick="playSong" />
 
+    <Button android:id="@+id/button_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_pause"
+        android:onClick="pauseSong" />
+
     <Button android:id="@+id/button_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

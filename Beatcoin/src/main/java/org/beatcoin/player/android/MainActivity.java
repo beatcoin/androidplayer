@@ -31,6 +31,14 @@ public class MainActivity extends Activity {
         mediaPlayer = MediaPlayer.create(this, Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/Music/Sexy Boy.mp3"));
     }
 
+    public void pauseSong(View view) {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        } else {
+            mediaPlayer.start();
+        }
+    }
+
     public void playSong(View view) {
         mediaPlayer.start();
     }
