@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mediaPlayer = MediaPlayer.create(this, Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/Music/Sexy Boy.mp3"));
+        prepareMediaPlayer();
     }
 
     @Override
@@ -27,18 +27,17 @@ public class MainActivity extends Activity {
         return true;
     }
 
+    public void prepareMediaPlayer() {
+        mediaPlayer = MediaPlayer.create(this, Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/Music/Sexy Boy.mp3"));
+    }
+
     public void playSong(View view) {
         mediaPlayer.start();
-        Log.i("play", "clicked");
     }
 
     public void stopSong(View view) {
         mediaPlayer.stop();
-        Log.i("stop", "clicked");
-    }
-
-    public void onStop() {
-        mediaPlayer.release();
+        prepareMediaPlayer();
     }
 
 }
