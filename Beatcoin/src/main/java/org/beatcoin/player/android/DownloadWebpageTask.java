@@ -1,6 +1,5 @@
 package org.beatcoin.player.android;
 
-import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -38,6 +37,10 @@ public class DownloadWebpageTask extends AsyncTask<String, Void, String> {
             JSONObject object = (JSONObject) new JSONTokener(result).nextValue();
             String status = object.getString("status");
             JSONArray items = object.getJSONArray("items");
+            if (items.length() < 1) {
+                Log.e("onPostExecute", "Nothing in the queue");
+                return;
+            }
             JSONObject song = items.getJSONObject(0);
             songToPlay = song.getString("song_identifier");
         } catch (JSONException e) {
@@ -50,7 +53,6 @@ public class DownloadWebpageTask extends AsyncTask<String, Void, String> {
 
     private String downloadUrl(String myurl) throws IOException {
         InputStream is = null;
-        int len = 50000;
 
         try {
             URL url = new URL(myurl);
@@ -59,14 +61,16 @@ public class DownloadWebpageTask extends AsyncTask<String, Void, String> {
             conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod("GET");
             conn.setDoInput(true);
-            // Starts the query
             conn.connect();
-            int response = conn.getResponseCode();
-            Log.d("downloadUrl", "HTTP response code: " + response);
-            is = conn.getInputStream();
+            int responseCode = conn.getResponseCode();
+            Log.d("downloadUrl", "HTTP response code: " + responseCode);
 
-            return convertStreamToString(is);
-
+            if (responseCode == 200) {
+                is = conn.getInputStream();
+                return convertStreamToString(is);
+            } else {
+                return "";
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return null;

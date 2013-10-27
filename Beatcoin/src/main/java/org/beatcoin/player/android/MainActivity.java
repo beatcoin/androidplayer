@@ -41,13 +41,13 @@ public class MainActivity extends Activity {
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
-            Log.d("mStatusChecker", "Polling...");
             requestPlayQueue();
             mHandler.postDelayed(mStatusChecker, mInterval);
         }
     };
 
     void startRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
         mStatusChecker.run();
     }
 
@@ -79,7 +79,8 @@ public class MainActivity extends Activity {
     }
 
     private void requestPlayQueue() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying() == false) {
+        if (mediaPlayer == null) {
+            Log.d("mStatusChecker", "Polling...");
             new DownloadWebpageTask(this).execute(apiUrl);
         }
     }
@@ -97,11 +98,26 @@ public class MainActivity extends Activity {
     }
 
     public void stopSong(View view) {
+        destroyMediaPlayer();
+    }
+
+    protected void destroyMediaPlayer() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
         }
+    }
+
+    protected void onResume() {
+        super.onResume();
+        startRepeatingTask();
+    }
+
+    protected void onStop() {
+        destroyMediaPlayer();
+        stopRepeatingTask();
+        super.onStop();
     }
 
 }
