@@ -79,10 +79,6 @@ public class MainActivity extends Activity {
         musicList = mp3Files.subList(0, 20);
     }
 
-    public void playSong(View view) {
-        requestPlayQueue();
-    }
-
     private void requestPlayQueue() {
         if (mediaPlayer == null) {
             Log.d("mStatusChecker", "Polling...");
