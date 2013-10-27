@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -15,6 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends Activity {
+
+    private int mInterval = 5000;
+
+    private Handler mHandler;
 
     protected MediaPlayer mediaPlayer;
 
@@ -29,6 +34,25 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         readMusic(musicFolder);
+        mHandler = new Handler();
+        startRepeatingTask();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            Log.d("mStatusChecker", "Polling...");
+            requestPlayQueue();
+            mHandler.postDelayed(mStatusChecker, mInterval);
+        }
+    };
+
+    void startRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void stopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
     }
 
     @Override
@@ -51,7 +75,13 @@ public class MainActivity extends Activity {
     }
 
     public void playSong(View view) {
-        new DownloadWebpageTask(this).execute(apiUrl);
+        requestPlayQueue();
+    }
+
+    private void requestPlayQueue() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying() == false) {
+            new DownloadWebpageTask(this).execute(apiUrl);
+        }
     }
 
     public void playSongByName(String name) {
