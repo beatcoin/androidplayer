@@ -80,6 +80,9 @@ public class MainActivity extends Activity {
     }
 
     private void requestPlayQueue() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying() == false) {
+            mediaPlayer = null;
+        }
         if (mediaPlayer == null) {
             Log.d("mStatusChecker", "Polling...");
             new DownloadWebpageTask(this).execute(apiUrl);
