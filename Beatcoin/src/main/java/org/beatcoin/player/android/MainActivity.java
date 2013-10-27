@@ -20,17 +20,19 @@ public class MainActivity extends Activity {
 
     protected List<String> musicList;
 
+    protected String musicFolder = Environment.getExternalStorageDirectory().getPath() + "/Music/";
+
+    protected String apiUrl = "http://engine.beatcoin.org/jukebox/526c687e1889080387b0911c/play";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        readMusic(Environment.getExternalStorageDirectory().getPath() + "/Music");
-        prepareMediaPlayer();
+        readMusic(musicFolder);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -45,28 +47,31 @@ public class MainActivity extends Activity {
                 mp3Files.add(file.getName());
             }
         }
-        musicList = mp3Files;
-    }
-
-    public void prepareMediaPlayer() {
-        mediaPlayer = MediaPlayer.create(this, Uri.parse(Environment.getExternalStorageDirectory().getPath() + "/Music/Sexy Boy.mp3"));
-    }
-
-    public void pauseSong(View view) {
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-        } else {
-            mediaPlayer.start();
-        }
+        musicList = mp3Files.subList(0, 20);
     }
 
     public void playSong(View view) {
-        mediaPlayer.start();
+        new DownloadWebpageTask(this).execute(apiUrl);
+    }
+
+    public void playSongByName(String name) {
+        Log.d("playSongByName", "Playing song \"" + name + "\"");
+        if(mediaPlayer == null) {
+            try {
+                mediaPlayer = MediaPlayer.create(this, Uri.parse(musicFolder + name));
+                mediaPlayer.start();
+            } catch (Exception e) {
+                Log.d("playSongByName", "Playback failed");
+            }
+        }
     }
 
     public void stopSong(View view) {
-        mediaPlayer.stop();
-        prepareMediaPlayer();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
     }
 
 }
