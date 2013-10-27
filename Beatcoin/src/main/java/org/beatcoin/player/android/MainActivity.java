@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,10 +30,14 @@ public class MainActivity extends Activity {
 
     protected String apiUrl = "http://engine.beatcoin.org/jukebox/526c687e1889080387b0911c/play";
 
+    protected Button skipButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        skipButton = (Button) findViewById(R.id.button_skip);
+        skipButton.setEnabled(false);
         readMusic(musicFolder);
         mHandler = new Handler();
         startRepeatingTask();
@@ -91,6 +96,7 @@ public class MainActivity extends Activity {
             try {
                 mediaPlayer = MediaPlayer.create(this, Uri.parse(musicFolder + name));
                 mediaPlayer.start();
+                skipButton.setEnabled(true);
             } catch (Exception e) {
                 Log.d("playSongByName", "Playback failed");
             }
@@ -103,6 +109,7 @@ public class MainActivity extends Activity {
 
     protected void destroyMediaPlayer() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            skipButton.setEnabled(false);
             mediaPlayer.stop();
             mediaPlayer.release();
             mediaPlayer = null;
