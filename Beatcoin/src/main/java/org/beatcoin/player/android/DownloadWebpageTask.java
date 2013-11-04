@@ -72,8 +72,8 @@ public class DownloadWebpageTask extends AsyncTask<String, Void, String> {
                 return "";
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            Log.e("downloadUrl", e.getMessage());
+            return "";
         } finally {
             if (is != null) {
                 is.close();

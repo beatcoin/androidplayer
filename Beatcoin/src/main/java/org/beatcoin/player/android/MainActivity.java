@@ -46,8 +46,8 @@ public class MainActivity extends Activity {
     Runnable mStatusChecker = new Runnable() {
         @Override
         public void run() {
-            requestPlayQueue();
-            mHandler.postDelayed(mStatusChecker, mInterval);
+        requestPlayQueue();
+        mHandler.postDelayed(mStatusChecker, mInterval);
         }
     };
 
